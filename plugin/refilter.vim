@@ -89,10 +89,38 @@ function! s:ReFilter_FilterCurrentBuffer(filterArguments)
   endwhile
 endfunction
 
+" ReFilter_Filter - function which filters using the global or inverse (v) command
+function! s:ReFilter_Filter(filterCommand, filterArguments)
+  let s:len = len(a:filterArguments)
+  if s:len == 0
+    return
+  endif
+
+  let s:globalPattern = ':'. a:filterCommand . '/'
+  let s:i = 0
+  while s:i < s:len
+    let s:argument = get(a:filterArguments, s:i)
+    if s:i < s:len - 1
+      let s:globalPattern = s:globalPattern . s:argument . '\|' 
+    else
+      let s:globalPattern = s:globalPattern . s:argument
+    endif
+    let s:i += 1
+  endwhile
+  let s:globalPattern = s:globalPattern . '/d'
+  echo 'Global command executed: ' . s:globalPattern
+
+  if len(s:globalPattern) > 0
+    silent execute s:globalPattern
+  endif
+
+endfunction
+
 "The functionality END ++++++++++++++++++++++++++++++++++++++++++
 
 " adding example command and mapping
-command! -nargs=+ ReFilter :call s:ReFilter_FilterCurrentBuffer([<f-args>])
+command! -nargs=+ VFilter :call s:ReFilter_Filter('v', [<f-args>])
+command! -nargs=+ GFilter :call s:ReFilter_Filter('g', [<f-args>])
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
