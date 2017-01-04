@@ -22,9 +22,9 @@ let s:gvfilterLastCommand = ''
 " GVFilter_Update - function to show current file in preview window,
 " go to its end and center it
 function! s:GVFilter_Update()
-  pedit!
+  normal u
   normal G
-  normal zz
+  call s:GVFilter_Filter('', [])
 endfunction
 
 " gvfilter_tick - the function executed by the timer
