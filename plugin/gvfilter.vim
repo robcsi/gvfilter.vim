@@ -1,57 +1,61 @@
 " Vim global plugin for continouosly filtering the current buffer by
 " given filter arguments
-" Last Change:  2016 Dec 28 
+" Last Change:  2017 Jan 04 
 " Maintainer:	Robert Sarkozi <sarkozi.robert@gmail.com>
-" License:	This file is placed in the public domain.
+" License:	GPL
 " Version:	0.1.0
 
-if exists("g:loaded_refilter")
+if exists("g:loaded_gvfilter")
   finish
 endif
-let g:loaded_refilter = 1
+let g:loaded_gvfilter = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
 "The functionality BEGIN ++++++++++++++++++++++++++++++++++++++++++
 
-" ReFilter_Update - function to show current file in preview window,
+"container of arguments emtpy at first
+let s:gvfilterArguments = []
+let s:gvfilterLastCommand = ''
+
+" GVFilter_Update - function to show current file in preview window,
 " go to its end and center it
-function! s:ReFilter_Update()
+function! s:GVFilter_Update()
   pedit!
   normal G
   normal zz
 endfunction
 
-" refilter_tick - the function executed by the timer
+" gvfilter_tick - the function executed by the timer
 " this function needs to be more public than script (s:) scope!
-function! refilter#refilter_tick(timer_id)
-  if exists('b:refilter_timer_id') && b:refilter_timer_id == a:timer_id
-    if getfsize(bufname('%')) != b:refilter_file_size
-      let b:refilter_file_size = getfsize(bufname('%'))
-      call s:ReFilter_Update()
+function! gvfilter#gvfilter_tick(timer_id)
+  if exists('b:gvfilter_timer_id') && b:gvfilter_timer_id == a:timer_id
+    if getfsize(bufname('%')) != b:gvfilter_file_size
+      let b:gvfilter_file_size = getfsize(bufname('%'))
+      call s:GVFilter_Update()
     endif
   endif
 endfunction
 
-" ReFilter_Start - function that starts watching the current file
-function! s:ReFilter_Start()
-  let b:refilter_file_size = getfsize(bufname('%'))
-  let b:refilter_timer_id = timer_start(1000, 'refilter#refilter_tick', {'repeat': -1})
-  call s:ReFilter_Update()
+" GVFilter_Start - function that starts watching the current file
+function! s:GVFilter_Start()
+  let b:gvfilter_file_size = getfsize(bufname('%'))
+  let b:gvfilter_timer_id = timer_start(1000, 'gvfilter#gvfilter_tick', {'repeat': -1})
+  call s:GVFilter_Update()
 endfunction
 
-" ReFilter_Stop - function to stop what Start started
-function! s:ReFilter_Stop()
-  if exists('b:refilter_timer_id')
-    call timer_stop(b:refilter_timer_id)
-    unlet b:refilter_timer_id
-    unlet b:refilter_file_size
+" GVFilter_Stop - function to stop what Start started
+function! s:GVFilter_Stop()
+  if exists('b:gvfilter_timer_id')
+    call timer_stop(b:gvfilter_timer_id)
+    unlet b:gvfilter_timer_id
+    unlet b:gvfilter_file_size
   endif
 endfunction
 
-" ReFilter_FilterCurrentBuffer - function that does the main work of filtering
-function! s:ReFilter_FilterCurrentBuffer(filterArguments)
+" GVFilter_FilterCurrentBuffer - function that does the main work of filtering
+function! s:GVFilter_FilterCurrentBuffer(filterArguments)
   if len(a:filterArguments) == 0
     return
   endif
@@ -66,10 +70,7 @@ function! s:ReFilter_FilterCurrentBuffer(filterArguments)
 
   let s:i = 1
   while s:i <= s:end
-    "echo s:i
     let s:line = getline(s:i)
-    "echo s:line
-    "echo s:end
     let s:matches = 0
     for s:argument in a:filterArguments
       if s:line =~ s:argument
@@ -89,17 +90,30 @@ function! s:ReFilter_FilterCurrentBuffer(filterArguments)
   endwhile
 endfunction
 
-" ReFilter_Filter - function which filters using the global or inverse (v) command
-function! s:ReFilter_Filter(filterCommand, filterArguments)
-  let s:len = len(a:filterArguments)
-  if s:len == 0
+" GVFilter_Filter - function which filters using the global or inverse (v) command
+function! s:GVFilter_Filter(filterCommand, filterArguments)
+  "repeat last command, if no parameters are given
+  if len(a:filterCommand) == 0 && len(a:filterArguments) == 0
+    if len(s:gvfilterLastCommand) == 0
+      echo 'GVFilter: Nothing to execute!'
+    else
+      silent execute s:gvfilterLastCommand
+      echo 'GVFilter: Command executed: ' . s:gvfilterLastCommand
+    endif
     return
   endif
+
+  "store arguments to be able to run it again and
+  let s:len = len(a:filterArguments)
+  if s:len > 0
+    let s:gvfilterArguments = a:filterArguments
+  endif
+  let s:len = len(s:gvfilterArguments)
 
   let s:globalPattern = ':'. a:filterCommand . '/'
   let s:i = 0
   while s:i < s:len
-    let s:argument = get(a:filterArguments, s:i)
+    let s:argument = get(s:gvfilterArguments, s:i)
     if s:i < s:len - 1
       let s:globalPattern = s:globalPattern . s:argument . '\|' 
     else
@@ -108,19 +122,20 @@ function! s:ReFilter_Filter(filterCommand, filterArguments)
     let s:i += 1
   endwhile
   let s:globalPattern = s:globalPattern . '/d'
-  echo 'Global command executed: ' . s:globalPattern
 
   if len(s:globalPattern) > 0
-    silent execute s:globalPattern
+    let s:gvfilterLastCommand = s:globalPattern
+    silent execute s:gvfilterLastCommand
+    echo 'GVFilter: Command executed: ' . s:gvfilterLastCommand
   endif
-
 endfunction
 
 "The functionality END ++++++++++++++++++++++++++++++++++++++++++
 
 " adding example command and mapping
-command! -nargs=+ VFilter :call s:ReFilter_Filter('v', [<f-args>])
-command! -nargs=+ GFilter :call s:ReFilter_Filter('g', [<f-args>])
+command! -nargs=+ VFilter :call s:GVFilter_Filter('v', [<f-args>])
+command! -nargs=+ GFilter :call s:GVFilter_Filter('g', [<f-args>])
+command! -nargs=0 GVRepeatLastFilter :call s:GVFilter_Filter('', [])
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
