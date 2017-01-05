@@ -1,5 +1,5 @@
 
-" Vim global plugin for continouosly filtering the current buffer by
+" Vim global plugin for continuously filtering the current buffer by
 " given filter arguments
 " Last Change:  2017 Jan 05
 " Maintainer:	Robert Sarkozi <sarkozi.robert at gmail dot com>
@@ -46,42 +46,6 @@ function! gvfilter#GVFilter_Stop()
     unlet b:gvfilter_timer_id
     unlet b:gvfilter_file_size
   endif
-endfunction
-
-" GVFilter_FilterCurrentBuffer - function that does the main work of filtering
-function! s:GVFilter_FilterCurrentBuffer(filterArguments)
-  if len(a:filterArguments) == 0
-    return
-  endif
-
-  let s:end = line('$')
-
-  if s:end == 1
-    return
-  endif
-
-  normal gg
-
-  let s:i = 1
-  while s:i <= s:end
-    let s:line = getline(s:i)
-    let s:matches = 0
-    for s:argument in a:filterArguments
-      if s:line =~ s:argument
-        let s:matches = 1
-        break
-      endif
-    endfor
-    if s:matches == 1
-      " skip to next line
-      let s:i = s:i + 1
-      normal j
-    else
-      " delete current line and start over
-      normal dd
-      let s:end = line('$')
-    endif
-  endwhile
 endfunction
 
 " GVFilter_Filter - function which filters using the global or inverse (v) command
