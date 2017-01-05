@@ -22,8 +22,7 @@ let s:gvfilterLastCommand = ''
 " GVFilter_Update - function to show current file in preview window,
 " go to its end and center it
 function! s:GVFilter_Update()
-  normal u
-  normal G
+  edit!
   call s:GVFilter_Filter('', [])
 endfunction
 
