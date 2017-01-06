@@ -56,6 +56,7 @@ function! gvfilter#GVFilter_Filter(filterCommand, filterArguments)
     if len(s:gvfilterLastCommand) == 0
       echo 'GVFilter: Nothing to execute!'
     else
+      edit!
       silent execute s:gvfilterLastCommand
       echo 'GVFilter: Command executed: ' . s:gvfilterLastCommand
     endif
