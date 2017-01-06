@@ -8,6 +8,7 @@
 
 "container of arguments emtpy at first
 let s:gvfilterArguments = []
+"last command empty at first
 let s:gvfilterLastCommand = ''
 
 " GVFilter_Update - function to show current file in preview window,
@@ -46,6 +47,15 @@ function! gvfilter#GVFilter_Stop()
     unlet b:gvfilter_timer_id
     "unlet b:gvfilter_file_size
     echo 'GVFilter: Monitoring stopped.'
+  endif
+endfunction
+
+" GVFilter_ShowLast - function to show the last executed command, if any
+function! gvfilter#GVFilter_ShowLast()
+  if len(s:gvfilterLastCommand) == 0
+    echo 'GVFilter: No command defined!'
+  else
+    echo 'GVFilter: Last command: ' . s:gvfilterLastCommand
   endif
 endfunction
 

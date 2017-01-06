@@ -20,6 +20,7 @@ command! -nargs=+ GVFilterVFilter :call gvfilter#GVFilter_Filter('v', [<f-args>]
 command! -nargs=0 GVFilterRepeatLast :call gvfilter#GVFilter_Update()
 command! -nargs=0 GVFilterStart :call gvfilter#GVFilter_Start()
 command! -nargs=0 GVFilterStop :call gvfilter#GVFilter_Stop()
+command! -nargs=0 GVFilterShowLast :call gvfilter#GVFilter_ShowLast()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

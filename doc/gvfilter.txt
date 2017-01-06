@@ -112,5 +112,7 @@ Features I plan to implement:
 
     o Customize timer interval, default 1 sec.
     o Option to set undolevels and/or reduce memory consumption
+    o Option to only run continuous filtering if file has changed in the
+    meantime
 
  vim:ts=8 sw=8 noexpandtab tw=78 ft=help:
