@@ -2,7 +2,7 @@
 " Vim global plugin for continuously filtering the current buffer by
 " given filter arguments
 " Last Change:  2017 Jan 06
-" Maintainer:	Robert Sarkozi <sarkozi.robert at gmail dot com>
+" Maintainer:	Robert Sarkozi <sarkozi dot robert at gmail dot com>
 " License:	GPL
 " Version:	0.1.0
 

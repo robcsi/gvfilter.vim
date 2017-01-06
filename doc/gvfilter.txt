@@ -1,10 +1,10 @@
 *gvfilter.txt*	Plugin for filtering the current buffer based on g/v commands
 		For Vim version 7.4 and above.
-		Last Change: 2017 Jan 05 10:41 PM
+		Last Change: 2017 Jan 06
 	
 
 				By Robert Sarkozi
-	        sarkozi dot robert email-at-sign gmail dot com
+			sarkozi dot robert at gmail dot com
 
 						    *gvfilter* *gvfilter-plugin*
 	Contents:
@@ -13,7 +13,7 @@
 		Mappings...................|gvfilter-mappings|
 		Future plans...............|gvfilter-plans|
 
-The plugin will filter the current buffer so that only lines matching the given arguments
+The plugin filters the current buffer so that only lines matching the given arguments
 remain in the file or all others, non-matching lines.
 
 It is a wrapper for the global/v commands, adding a bit more functionality
@@ -25,6 +25,7 @@ commands for each and letting the user just enumerate the filter arguments.
 The executed VIm command is deletion.
 
 General forms of the commands the plugin executes are:
+
 	o :g/pattern/d
 
 	o :v/pattern/d
@@ -32,9 +33,8 @@ General forms of the commands the plugin executes are:
 'pattern' can be a list of arguments in case more than one argument is passed
 to the plugin.
 >
-    :g/arg1\|arg2\|arg3/d
+    :v/arg1\|arg2\|arg3/d
 <
-
 In this case only lines matching arg1 or arg2 or arg3 will be shown in the buffer
 and all the other lines deleted.
 
@@ -43,6 +43,7 @@ Get the plugin from here on Github: https://github.com/robcsi/gvfilter.vim.git
 You can use Pathogen to include it into your bundle.
 
 Other features include:
+
 	o The last command can be repeated by calling a command created specially
 	  for that purpose. The plugin remembers the last assembled command
 
@@ -62,7 +63,6 @@ Other features include:
 	o The assembled command will be displayd at the bottom for the user to
 	  see what has been executed.
 
-Naturally, you must set 'nocompatible' in your |vimrc| file to use this plugin. 
 You can stop the plugin from being loaded by setting the "g:loaded_gvfilter" 
 variable: >
 
@@ -109,6 +109,8 @@ from the user. Just enter a couple of arguments and you're good to go.
 FUTURE PLANS						    *gvfilter-plans*
 
 Features I plan to implement:
+
     o Customize timer interval, default 1 sec.
+    o Option to set undolevels and/or reduce memory consumption
 
  vim:ts=8 sw=8 noexpandtab tw=78 ft=help:
