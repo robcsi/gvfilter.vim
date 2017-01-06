@@ -13,9 +13,7 @@ let s:gvfilterLastCommand = ''
 " GVFilter_Update - function to show current file in preview window,
 " go to its end and center it
 function! gvfilter#GVFilter_Update()
-  edit!
   call gvfilter#GVFilter_Filter('', [])
-  normal G
 endfunction
 
 " gvfilter_tick - the function executed by the timer
@@ -86,6 +84,7 @@ function! gvfilter#GVFilter_Filter(filterCommand, filterArguments)
 
   if len(s:globalPattern) > 0
     let s:gvfilterLastCommand = s:globalPattern
+    edit!
     silent execute s:gvfilterLastCommand
     echo 'GVFilter: Command executed: ' . s:gvfilterLastCommand
   endif

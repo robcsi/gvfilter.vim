@@ -17,7 +17,7 @@ set cpo&vim
 " adding example commands and mappings
 command! -nargs=+ GVFilterGFilter :call gvfilter#GVFilter_Filter('g', [<f-args>])
 command! -nargs=+ GVFilterVFilter :call gvfilter#GVFilter_Filter('v', [<f-args>])
-command! -nargs=0 GVFilterRepeatLast :call gvfilter#GVFilter_Filter('', [])
+command! -nargs=0 GVFilterRepeatLast :call gvfilter#GVFilter_Update()
 command! -nargs=0 GVFilterStart :call gvfilter#GVFilter_Start()
 command! -nargs=0 GVFilterStop :call gvfilter#GVFilter_Stop()
 
