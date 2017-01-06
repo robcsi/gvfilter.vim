@@ -1,0 +1,114 @@
+*gvfilter.txt*	Plugin for filtering the current buffer based on g/v commands
+		For Vim version 7.4 and above.
+		Last Change: 2017 Jan 05 10:41 PM
+	
+
+				By Robert Sarkozi
+	        sarkozi dot robert email-at-sign gmail dot com
+
+						    *gvfilter* *gvfilter-plugin*
+	Contents:
+
+		Commands...................|gvfilter-invoking|
+		Mappings...................|gvfilter-mappings|
+		Future plans...............|gvfilter-plans|
+
+The plugin will filter the current buffer so that only lines matching the given arguments
+remain in the file or all others, non-matching lines.
+
+It is a wrapper for the global/v commands, adding a bit more functionality
+like being able to repeat the last command executed, or starting a timer to continuously
+execute the last command.
+
+It makes it easy for the user to assemble the global/v command by defining 
+commands for each and letting the user just enumerate the filter arguments. 
+The executed VIm command is deletion.
+
+General forms of the commands the plugin executes are:
+	o :g/pattern/d
+
+	o :v/pattern/d
+
+'pattern' can be a list of arguments in case more than one argument is passed
+to the plugin.
+>
+    :g/arg1\|arg2\|arg3/d
+<
+
+In this case only lines matching arg1 or arg2 or arg3 will be shown in the buffer
+and all the other lines deleted.
+
+Get the plugin from here on Github: https://github.com/robcsi/gvfilter.vim.git
+
+You can use Pathogen to include it into your bundle.
+
+Other features include:
+	o The last command can be repeated by calling a command created specially
+	  for that purpose. The plugin remembers the last assembled command
+
+	o The user is also able to continously filter the current buffer, by using
+	  two commands which use VIm's timer mechanisms. The _Start and _Stop 
+	  commands facilitate this. This is very useful when wanting to 
+	  filter growing files, like logs. Default timer interval is 1 second.
+
+	o When repeating the last command, both manually or by using 
+	  the timer commands, the changes in the file done by the last command 
+	  are undone. In this sense filtering very large files is not recommended 
+	  because of VIm's undo mechanism's memory usage (see :h undolevels 
+	  and :h E342), as undo information is kept in memory.
+	  When using very large files, setting undolevels to a smaller 
+	  value or disabling it is a possible path to follow.
+
+	o The assembled command will be displayd at the bottom for the user to
+	  see what has been executed.
+
+Naturally, you must set 'nocompatible' in your |vimrc| file to use this plugin. 
+You can stop the plugin from being loaded by setting the "g:loaded_gvfilter" 
+variable: >
+
+    :let g:loaded_gvfilter = 1
+<
+==============================================================================
+COMMANDS						    *gvfilter-invoking*
+
+The two basic commands are
+>
+    :GVFilterGFilter <arg1> <arg2> ... <argn> "filter by global command
+<
+and
+>
+    :GVFilterVFilter <arg1> <arg2> ... <argn> "filter by inverse (v) command
+<
+
+There are three more commands:
+>
+    :GVFilterRepeatLast	    "repeats last command in above form, if any
+<,
+>
+    :GVFilterStart	    "starts timer which will repeat last command, if any
+<
+and
+>
+    :GVFilterStop	    "stops timer which will repeat last command, if any
+<
+==============================================================================
+MAPPINGS						    *gvfilter-mappings*
+
+You can define mappings for the plugin to be called more easily:
+>
+    nnoremap <silent> <leader>gg :GVFilterGFilter
+    nnoremap <silent> <leader>gv :GVFilterVFilter
+    nnoremap <silent> <leader>gr :GVFilterRepeatLast<CR>
+    nnoremap <silent> <leader>gs :GVFilterStart<CR>
+    nnoremap <silent> <leader>gt :GVFilterStop<CR>
+<
+The first two don't require an <Enter> key at the end as they expect input
+from the user. Just enter a couple of arguments and you're good to go.
+
+==============================================================================
+FUTURE PLANS						    *gvfilter-plans*
+
+Features I plan to implement:
+    o Customize timer interval, default 1 sec.
+
+ vim:ts=8 sw=8 noexpandtab tw=78 ft=help:
