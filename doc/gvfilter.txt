@@ -1,6 +1,6 @@
 *gvfilter.txt*	Plugin for filtering the current buffer based on g/v commands
 		For Vim version 7.4 and above.
-		Last Change: 2017 Jan 06
+		Last Change: 2017 Jan 11
 	
 
 				By Robert Sarkozi
@@ -11,7 +11,7 @@
 
 		Commands...................|gvfilter-invoking|
 		Mappings...................|gvfilter-mappings|
-		Future plans...............|gvfilter-plans|
+		Options....................|gvfilter-options|
 
 The plugin filters the current buffer so that only lines matching the given arguments
 remain in the file or all others, non-matching lines.
@@ -50,20 +50,36 @@ Other features include:
 	o The user is also able to continously filter the current buffer, by using
 	  two commands which use VIm's timer mechanisms. The _Start and _Stop 
 	  commands facilitate this. This is very useful when wanting to 
-	  filter growing files, like logs. Default timer interval is 1 second.
+	  filter growing files, like logs.
 
 	o When repeating the last command, both manually or by using 
 	  the timer commands, the changes in the file done by the last command 
-	  are undone. In this sense filtering very large files is not recommended 
-	  because of VIm's undo mechanism's memory usage (see :h undolevels 
-	  and :h E342), as undo information is kept in memory.
+	  are undone, the file is reloaded from the disk. In this sense filtering 
+	  very large files is not recommended because of VIm's undo mechanism's 
+	  memory usage (see :h undolevels and :h E342), as undo information 
+	  is kept in memory.
 	  When using very large files, setting undolevels to a smaller 
 	  value or disabling it is a possible path to follow.
 
-	o The assembled command will be displayd at the bottom for the user to
-	  see what has been executed.
+	o The assembled command can be displayed for the user to see what has 
+	  been executed.
 
-You can stop the plugin from being loaded by setting the "g:loaded_gvfilter" 
+The plugin can be configured to `reload` the current buffer content from the
+file on the disk before running the next command. If this is enabled, the last
+saved version of the file is reloaded (`:edit!`) and then the command is
+executed (see options, below).
+If this option is disabled, then the file will not be reloaded into the
+buffer, but the current buffer content will be filtered by the plugin.
+
+When using the `timer` functionality, you can specify the interval at which the
+timer is executed, in milliseconds. The default value is 1 second.
+
+Another option, `gvfilter_onchanged`, allows to restricts the reloading of the
+file to only if its contents changed on the disk. This is useful when
+monitoring growing files like logs. You don't want to run the last command
+every interval specified, but only if it's changed.
+
+You can stop the plugin from being loaded by setting the `g:loaded_gvfilter` 
 variable: >
 
     :let g:loaded_gvfilter = 1
@@ -79,17 +95,21 @@ and
 >
     :GVFilterVFilter <arg1> <arg2> ... <argn> "filter by inverse (v) command
 <
-
-There are three more commands:
->
-    :GVFilterRepeatLast	    "repeats last command in above form, if any
-<,
+There are four more commands:
 >
     :GVFilterStart	    "starts timer which will repeat last command, if any
 <
-and
+,
+>
+    :GVFilterRepeatLast	    "repeats last command in above form, if any
+<
+,
 >
     :GVFilterStop	    "stops timer which will repeat last command, if any
+<
+and
+>
+    :GVFilterShowLast	    "shows last command, if any
 <
 ==============================================================================
 MAPPINGS						    *gvfilter-mappings*
@@ -101,18 +121,29 @@ You can define mappings for the plugin to be called more easily:
     nnoremap <silent> <leader>gr :GVFilterRepeatLast<CR>
     nnoremap <silent> <leader>gs :GVFilterStart<CR>
     nnoremap <silent> <leader>gt :GVFilterStop<CR>
+    nnoremap <silent> <leader>gl :GVFilterShowLast<CR>
 <
 The first two don't require an <Enter> key at the end as they expect input
 from the user. Just enter a couple of arguments and you're good to go.
 
 ==============================================================================
-FUTURE PLANS						    *gvfilter-plans*
+OPTIONS							     *gvfilter-options*
 
-Features I plan to implement:
-
-    o Customize timer interval, default 1 sec.
-    o Option to set undolevels and/or reduce memory consumption
-    o Option to only run continuous filtering if file has changed in the
-    meantime
+You can configure the plugin with the following options:
+>
+    g:gvfilter_timerinterval
+<
+to set the interval used by the timer (default: 1000, in milliseconds);
+>
+    g:gvfilter_reload
+<
+specifies whether or not to reload the file before the next command (default:
+1 - enabled);
+>
+    g:gvfilter_onchanged
+<
+specifies whether to reload the file only when it's changed or always
+(default: 0 - always). Set to 1 if you want to reload only if the file content
+changed.
 
  vim:ts=8 sw=8 noexpandtab tw=78 ft=help:

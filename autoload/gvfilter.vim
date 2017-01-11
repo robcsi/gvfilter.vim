@@ -1,7 +1,7 @@
 
 " Vim global plugin for continuously filtering the current buffer by
 " given filter arguments
-" Last Change:  2017 Jan 06
+" Last Change:  2017 Jan 11
 " Maintainer:	Robert Sarkozi <sarkozi dot robert at gmail dot com>
 " License:	GPL
 " Version:	0.1.0
@@ -21,10 +21,14 @@ endfunction
 " this function needs to be more public than script (s:) scope!
 function! gvfilter#gvfilter_tick(timer_id)
   if exists('b:gvfilter_timer_id') && b:gvfilter_timer_id == a:timer_id
-    "if getfsize(bufname('%')) != b:gvfilter_file_size
-      "let b:gvfilter_file_size = getfsize(bufname('%'))
+    if g:gvfilter_onchanged == 1
+      if getfsize(bufname('%')) != b:gvfilter_file_size
+        let b:gvfilter_file_size = getfsize(bufname('%'))
+        call gvfilter#GVFilter_Update()
+      endif
+    elseif g:gvfilter_onchanged == 0
       call gvfilter#GVFilter_Update()
-    "endif
+    endif
   endif
 endfunction
 
@@ -33,10 +37,16 @@ function! gvfilter#GVFilter_Start()
   if len(s:gvfilterLastCommand) == 0
     echo 'GVFilter: Nothing to execute!'
   else
-    "let b:gvfilter_file_size = getfsize(bufname('%'))
-    let b:gvfilter_timer_id = timer_start(1000, 'gvfilter#gvfilter_tick', {'repeat': -1})
-    echo 'GVFilter: Monitoring started.'
-    call gvfilter#GVFilter_Update()
+    if g:gvfilter_onchanged == 1 && !empty(glob(bufname('%')))
+      let b:gvfilter_file_size = getfsize(bufname('%'))
+    endif
+    if !empty(glob(bufname('%')))
+      let b:gvfilter_timer_id = timer_start(g:gvfilter_timerinterval, 'gvfilter#gvfilter_tick', {'repeat': -1})
+      echo 'GVFilter: Monitoring started.'
+      call gvfilter#GVFilter_Update()
+    else
+      echo 'GVFilter: File doesn''t exist on disk! Monitoring not started.'
+    endif
   endif
 endfunction
 
@@ -45,7 +55,9 @@ function! gvfilter#GVFilter_Stop()
   if exists('b:gvfilter_timer_id')
     call timer_stop(b:gvfilter_timer_id)
     unlet b:gvfilter_timer_id
-    "unlet b:gvfilter_file_size
+    if g:gvfilter_onchanged == 1
+      unlet b:gvfilter_file_size
+    endif
     echo 'GVFilter: Monitoring stopped.'
   endif
 endfunction
@@ -66,7 +78,9 @@ function! gvfilter#GVFilter_Filter(filterCommand, filterArguments)
     if len(s:gvfilterLastCommand) == 0
       echo 'GVFilter: Nothing to execute!'
     else
-      edit!
+      if g:gvfilter_reload == 1
+        silent edit!
+      endif
       silent execute s:gvfilterLastCommand
       echo 'GVFilter: Command executed: ' . s:gvfilterLastCommand
     endif
@@ -95,7 +109,9 @@ function! gvfilter#GVFilter_Filter(filterCommand, filterArguments)
 
   if len(s:globalPattern) > 0
     let s:gvfilterLastCommand = s:globalPattern
-    edit!
+    if g:gvfilter_reload == 1
+      silent edit!
+    endif
     silent execute s:gvfilterLastCommand
     echo 'GVFilter: Command executed: ' . s:gvfilterLastCommand
   endif
