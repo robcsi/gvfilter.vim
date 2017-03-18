@@ -1,5 +1,7 @@
+# GVFilter.vim
 VIm plugin to filter current buffer by given arguments, like :g or :v.
 
+## Purpose
 The plugin filters the current buffer so that only lines matching the given arguments
 remain in the file or all others, non-matching lines.
 
@@ -13,9 +15,9 @@ The executed VIm command is deletion.
 
 General forms of the commands the plugin executes are:
 
-	o :g/pattern/d
+- :g/pattern/d
 
-	o :v/pattern/d
+- :v/pattern/d
 
 'pattern' can be a list of arguments in case more than one argument is passed
 to the plugin.
@@ -29,23 +31,25 @@ Get the plugin from here on Github: https://github.com/robcsi/gvfilter.vim.git
 
 Other features include:
 
-	o The last command can be repeated by calling a command created specially
-	  for that purpose. The plugin remembers the last assembled command
+- The last command can be repeated by calling a command created specially for that purpose. The plugin remembers the last assembled command
 
-	o The user is also able to continously filter the current buffer, by using
-	  two commands which use VIm's timer mechanisms. The _Start and _Stop 
-	  commands facilitate this. This is very useful when wanting to 
-	  filter growing files, like logs.
+- The user is also able to continously filter the current buffer, by using two commands which use VIm's timer mechanisms. The _Start and _Stop commands facilitate this. This is very useful when wanting to filter growing files, like logs.
 
-	o When repeating the last command, both manually or by using 
-	  the timer commands, the changes in the file done by the last command 
-	  are undone, the file is reloaded from the disk. In this sense filtering 
-	  very large files is not recommended because of VIm's undo mechanism's 
-	  memory usage (see :h undolevels and :h E342), as undo information 
-	  is kept in memory.
-	  When using very large files, setting undolevels to a smaller 
-	  value or disabling it is a possible path to follow.
+- When repeating the last command, both manually or by using 
+the timer commands, the changes in the file done by the last command 
+are undone, the file is reloaded from the disk. In this sense filtering 
+very large files is not recommended because of VIm's undo mechanism's 
+memory usage (see :h undolevels and :h E342), as undo information 
+is kept in memory.
+When using very large files, setting undolevels to a smaller 
+value or disabling it is a possible path to follow.
 
-	o The assembled command can be displayed for the user to see what has been executed.
+- The assembled command can be displayed for the user to see what has been executed.
   
 Check the help file for more infomation: https://github.com/robcsi/gvfilter.vim/blob/master/doc/gvfilter.txt
+
+## Version
+0.1.0
+
+## Copyright - 2016 - 2017
+Robert Sarkozi
