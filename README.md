@@ -1,4 +1,4 @@
-#VIm plugin to filter current buffer by given arguments, like :g or :v.
+VIm plugin to filter current buffer by given arguments, like :g or :v.
 
 The plugin filters the current buffer so that only lines matching the given arguments
 remain in the file or all others, non-matching lines.
