@@ -116,12 +116,12 @@ MAPPINGS						    *gvfilter-mappings*
 
 You can define mappings for the plugin to be called more easily:
 >
-    nnoremap <silent> <leader>gg :GVFilterGFilter
-    nnoremap <silent> <leader>gv :GVFilterVFilter
-    nnoremap <silent> <leader>gr :GVFilterRepeatLast<CR>
-    nnoremap <silent> <leader>gs :GVFilterStart<CR>
-    nnoremap <silent> <leader>gt :GVFilterStop<CR>
-    nnoremap <silent> <leader>gl :GVFilterShowLast<CR>
+    nnoremap <leader>gg :GVFilterGFilter
+    nnoremap <leader>gv :GVFilterVFilter
+    nnoremap <leader>gr :GVFilterRepeatLast<CR>
+    nnoremap <leader>gs :GVFilterStart<CR>
+    nnoremap <leader>gt :GVFilterStop<CR>
+    nnoremap <leader>gl :GVFilterShowLast<CR>
 <
 The first two don't require an <Enter> key at the end as they expect input
 from the user. Just enter a couple of arguments and you're good to go.
