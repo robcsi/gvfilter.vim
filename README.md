@@ -44,3 +44,6 @@ Check the help file for more infomation: https://github.com/robcsi/gvfilter.vim/
 
 ## Copyright - 2016 - 2017
 Robert Sarkozi
+
+## Thanks
+Timer code inspired by the https://github.com/cosminadrianpopescu/vim-tail plugin.
